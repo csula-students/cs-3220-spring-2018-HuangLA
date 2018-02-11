@@ -1,0 +1,39 @@
+#main {
+  width: 200px;
+  border: 1px dotted black;
+}
+h1 {
+  margin: 0;
+    display: inline-block;
+}
+button {
+  float: right;
+}
+
+input{
+background-color: #d2d2d2;
+width: 500px;
+height: 200px;
+}
+#box1{
+	width:200px;
+	height:200px;
+	border:solid 2px black;
+	float:left;
+	margin-left:25px;
+
+}
+#box2{
+	width:200px;
+	height:200px;
+	float:left;
+	margin-left:25px;
+	
+}
+#box3{
+	width:200px;
+	height:200px;
+	float:left;
+	margin-left:25px;
+	
+}
