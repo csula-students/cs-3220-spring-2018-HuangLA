@@ -1,3 +1,5 @@
+import { Generator } from '../models/generator';
+
 export default function (store) {
  return class GeneratorComponent extends window.HTMLElement {
   constructor () {
@@ -16,8 +18,8 @@ export default function (store) {
      type: 'BUY_GENERATOR',
      payload: 'Grandma'
     });
-   });
+   	});
 
-  }
- };
+  	}
+ 	};
 }

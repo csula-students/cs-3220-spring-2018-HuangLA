@@ -7,8 +7,10 @@ window.incrementalGame = {
 
 function increaseNum() {
     var counter = document.getElementById("dis-num").value;
+
     counter++;
     document.getElementById("dis-num").value = counter;
+    window.incrementalGame.state.counter=counter;
 }
 
 
