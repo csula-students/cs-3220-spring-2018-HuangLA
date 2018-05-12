@@ -30,7 +30,7 @@ import edu.csula.models.Event;
  * ```
  */
 public class EventsDAOImpl implements EventsDAO {
-	private final ServletContext context;
+	private final ServletContext context; // key
 	protected static final String CONTEXT_NAME = "events";
 
 	public EventsDAOImpl(ServletContext context) {
@@ -40,28 +40,68 @@ public class EventsDAOImpl implements EventsDAO {
 	@Override
 	public List<Event> getAll() {
 		// TODO: read a list of events from context
-		return new ArrayList<>();
+		Object data = context.getAttribute(CONTEXT_NAME);
+		if (data == null) {
+			return new ArrayList<>();
+		}
+		return (List<Event>) data;
 	}
 
 	@Override
 	public Optional<Event> getById(int id) {
 		// TODO: get a certain event given its id from context (see getAll() on
-		// getting a list first and get a certain one from the list)
+		
+		List<Event> events = getAll();
+		for (Event e : events) {
+			if (e.getId() == id) {
+				return Optional.of(e);
+			}
+		}
 		return Optional.empty();
 	}
 
 	@Override
 	public void set(int id, Event event) {
 		// TODO: set a certain event given id to be different from context
+		List<Event> events = getAll();
+
+		
+		for (Event e : events) {
+			if (e.getId() == id) {
+				e.setName(event.getName());
+				e.setDescription(event.getDescription());
+				e.setTriggerAt(event.getTriggerAt());
+				break;
+			}
+		}
+
+		
+		context.setAttribute(CONTEXT_NAME, events);
 	}
 
 	@Override
 	public void add(Event event) {
 		// TODO: add a new event to the context
+		List<Event> events = getAll();
+		events.add(event);
+
+		
+		context.setAttribute(CONTEXT_NAME, events);
 	}
 
 	@Override
 	public void remove(int id) {
 		// TODO: remove a single event given id
+		List<Event> events = getAll();
+
+		for (int i = 0; i < events.size(); i++) {
+			if (events.get(i).getId() == id) {
+				events.remove(i);
+				break;
+			}
+		}
+
+		
+		context.setAttribute(CONTEXT_NAME, events);
 	}
 }
