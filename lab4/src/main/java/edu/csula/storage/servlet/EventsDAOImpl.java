@@ -40,74 +40,28 @@ public class EventsDAOImpl implements EventsDAO {
 	@Override
 	public List<Event> getAll() {
 		// TODO: read a list of events from context
-		List<Event> list= new ArrayList<Event>();
-		
-
-		
-		Object data = context.getAttribute(CONTEXT_NAME);
-		if (data == null) {
-			return list;
-		} else {
-			return (List<Event>) data;
-		}
-
+		return new ArrayList<>();
 	}
 
 	@Override
 	public Optional<Event> getById(int id) {
 		// TODO: get a certain event given its id from context (see getAll() on
 		// getting a list first and get a certain one from the list)
-		Optional<Event> actualEvent = Optional.empty();
-		List<Event> list = (List<Event>) context.getAttribute(CONTEXT_NAME);
-
-		for (int i = 0; i < list.size(); i++) {
-			if (list.get(i).getId() == id) {
-				actualEvent = Optional.of(list.get(i));
-			}
-		}
-
-		return actualEvent;
-		//return Optional.empty();
+		return Optional.empty();
 	}
 
 	@Override
 	public void set(int id, Event event) {
 		// TODO: set a certain event given id to be different from context
-		List<Event> newList = getAll();
-		for (int i = 0; i < newList.size(); i++) {
-			if (newList.get(i).getId() == id) {
-				newList.get(i).setName(event.getName());
-				newList.get(i).setDescription(event.getDescription());
-				newList.get(i).setTriggerAt(event.getTriggerAt());
-			}
-		}
-		
-
-		context.setAttribute(CONTEXT_NAME, newList);
-
 	}
 
 	@Override
 	public void add(Event event) {
 		// TODO: add a new event to the context
-		List<Event> newList = getAll();
-		newList.add(event);
-
-		context.setAttribute(CONTEXT_NAME, newList);
 	}
 
 	@Override
 	public void remove(int id) {
 		// TODO: remove a single event given id
-		List<Event> newList = getAll();
-		for (int i = 0; i < newList.size(); i++) {
-			if (newList.get(i).getId() == id) {
-				newList.remove(i);
-			}
-		}
-		
-
-		context.setAttribute(CONTEXT_NAME, newList);
-	
 	}
 }
