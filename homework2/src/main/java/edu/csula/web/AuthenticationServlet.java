@@ -15,18 +15,34 @@ public class AuthenticationServlet extends HttpServlet {
 	@Override
 	public void doGet( HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		response.setContentType("text/html");
+
+		doDelet(request,response);
+		RequestDispatcher dispatcher = request.getRequestDispatcher("/WEB-INF/user-authentication.jsp");
+		dispatcher.forward(request, response);
 		PrintWriter out = response.getWriter();
-		// TODO: render the authentication page HTML
-		out.println("<h1>Hello login servlet!</h1>");
+		
 	}
 
 	@Override
 	public void doPost( HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		// TODO: handle login
+		String username = request.getParameter("username");
+		String password = request.getParameter("password");
+
+		UsersDAO dao = new UsersDAOImpl(request.getSession());
+		if (dao.authenticate(username, password)) {
+			response.sendRedirect("../admin/events");
+		}
+		else {
+			
+			response.sendRedirect("../admin/auth");
+		}
 	}
 
     @Override
     public void doDelete( HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         // TODO: handle logout
+        userDAO dao= new UsersDAOImpl(request.getSession());
+        dao.logout();
     }
 }
