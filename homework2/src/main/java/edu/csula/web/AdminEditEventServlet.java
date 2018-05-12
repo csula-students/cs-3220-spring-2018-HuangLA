@@ -1,3 +1,4 @@
+
 package edu.csula.web;
 
 import java.io.IOException;
@@ -17,8 +18,8 @@ import edu.csula.models.Event;
 import edu.csula.storage.servlet.UsersDAOImpl;
 import edu.csula.storage.UsersDAO;
 
-@WebServlet("/admin/events")
-public class AdminEventsServlet extends HttpServlet {
+@WebServlet("/admin/events/edit")
+public class AdminEditEventServlet extends HttpServlet {
 	@Override
 	public void doGet( HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		response.setContentType("text/html");
@@ -27,34 +28,33 @@ public class AdminEventsServlet extends HttpServlet {
 
 		// If the user is not logged in, redirect to the login page
 		if (!userDao.getAuthenticatedUser().isPresent()) {
-			response.sendRedirect("../admin/auth");
+			response.sendRedirect("../../admin/auth");
 		}
 
-		// Render the events page HTML
+		// TODO: render the events page HTML
 		EventsDAO dao = new EventsDAOImpl(getServletContext());
-		Collection<Event> events = dao.getAll();
 
 		// Connect the servlet with the JSP file
-		request.setAttribute("events", events);
-		RequestDispatcher dispatcher = request.getRequestDispatcher("/WEB-INF/admin-events.jsp");
+		RequestDispatcher dispatcher = request.getRequestDispatcher("/WEB-INF/admin-events-edit.jsp");
 		dispatcher.forward(request, response);
 	}
 
 
 	@Override
 	public void doPost( HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		
-		// Grab the event information from the form
+		// TODO: handle upsert transaction
+		int id = Integer.parseInt(request.getParameter("id")); // Grab the id from the URL
 		String name = request.getParameter("event_name");
 		String description = request.getParameter("event_description");
 		int triggerAt = Integer.parseInt(request.getParameter("trigger"));
 
-		// Add the new generator and store it in the server
 		EventsDAO dao = new EventsDAOImpl(getServletContext());
 		Collection<Event> events = dao.getAll();
-		dao.add(new Event(events.size(), name, description, triggerAt));
 
-		// Stay on the events page after the form is submitted
-		response.sendRedirect("../admin/events");
+		// Replace the old event with the new event
+		dao.set(id, new Event(id, name, description, triggerAt));
+
+		// Send the user back to the events page
+		response.sendRedirect("../../admin/events");
 	}
 }

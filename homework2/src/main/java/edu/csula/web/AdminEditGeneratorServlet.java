@@ -1,7 +1,7 @@
-
 package edu.csula.web;
 
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.Collection;
 
 import javax.servlet.ServletException;
@@ -18,8 +18,8 @@ import edu.csula.models.Generator;
 import edu.csula.storage.servlet.UsersDAOImpl;
 import edu.csula.storage.UsersDAO;
 
-@WebServlet("/admin/generators")
-public class AdminGeneratorsServlet extends HttpServlet {
+@WebServlet("/admin/generators/edit")
+public class AdminEditGeneratorServlet extends HttpServlet {
 	@Override
 	public void doGet( HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		response.setContentType("text/html");
@@ -28,22 +28,23 @@ public class AdminGeneratorsServlet extends HttpServlet {
 
 		// If the user is not logged in, redirect to the login page
 		if (!userDao.getAuthenticatedUser().isPresent()) {
-			response.sendRedirect("../admin/auth");
+			response.sendRedirect("../../admin/auth");
 		}
 
-		// TODO: render the generators page HTML
+		// TODO: render the events page HTML
 		GeneratorsDAO dao = new GeneratorsDAOImpl(getServletContext());
-		Collection<Generator> generators = dao.getAll();
 
 		// Connect the servlet with the JSP file
-		request.setAttribute("generators", generators);
-		RequestDispatcher dispatcher = request.getRequestDispatcher("/WEB-INF/admin-generators.jsp");
+		RequestDispatcher dispatcher = request.getRequestDispatcher("/WEB-INF/admin-generators-edit.jsp");
 		dispatcher.forward(request, response);
 	}
 
 
 	@Override
 	public void doPost( HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+
+		// Grab the generator ID from the URL
+		int id = Integer.parseInt(request.getParameter("id"));
 		
 		// Grab the generator information from the form
 		String name = request.getParameter("generator_name");
@@ -52,12 +53,12 @@ public class AdminGeneratorsServlet extends HttpServlet {
 		int baseCost = Integer.parseInt(request.getParameter("base_cost"));
 		int unlockAt = Integer.parseInt(request.getParameter("unlock_at"));
 
-		// Add the new generator and store it in the server
+		// Replace the old generator with the new generator
 		GeneratorsDAO dao = new GeneratorsDAOImpl(getServletContext());
 		Collection<Generator> generators = dao.getAll();
-		dao.add(new Generator(generators.size(), name, description, rate, baseCost, unlockAt));
+		dao.set(id, new Generator(generators.size(), name, description, rate, baseCost, unlockAt));
 
-		// Stay on the generators page after the form is submitted
-		response.sendRedirect("../admin/generators");
+		// Send the user back to the events page
+		response.sendRedirect("../../admin/generators");
 	}
 }
